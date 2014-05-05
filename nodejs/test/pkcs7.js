@@ -200,6 +200,19 @@ function Tests(ASSERT, PKCS7, PKI, AES, DES, UTIL) {
       ASSERT.deepEqual(p7.recipients[0].encryptedContent.key, cert.publicKey);
     });
 
+    it('should sign data', function() {
+      var p7 = PKCS7.createSignedData();
+
+      var cert = PKI.certificateFromPem(_pem.certificate);
+      p7.addCertificate(cert);
+
+      // set content
+      p7.content = UTIL.createBuffer('data to sign');
+
+      p7.sign();
+
+    })
+
     it('should aes-encrypt a message', function() {
       var p7 = PKCS7.createEnvelopedData();
       var cert = PKI.certificateFromPem(_pem.certificate);
