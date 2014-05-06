@@ -327,6 +327,16 @@ function Tests(ASSERT, PKCS7, PKI, AES, DES, UTIL) {
         ASSERT.equal(p7.content.getBytes(), UTIL.hexToBytes(result));
       });
     });
+
+    it('should sign data', function() {
+        var p7 = PKCS7.createSignedData();
+        p7.addRecipient(PKI.certificateFromPem(_pem.certificate));
+        p7.content = UTIL.createBuffer('Just a little test');
+
+        p7.sign()
+
+
+    })
   });
 }
 
