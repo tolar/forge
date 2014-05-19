@@ -1,6 +1,6 @@
 (function() {
 
-function Tests(ASSERT, PKCS7, PKI, AES, DES, UTIL) {
+function Tests(ASSERT, PKCS7, PKI, AES, DES, UTIL, ASN1) {
   var _pem = {
     p7: '-----BEGIN PKCS7-----\r\n' +
       'MIICTgYJKoZIhvcNAQcDoIICPzCCAjsCAQAxggHGMIIBwgIBADCBqTCBmzELMAkG\r\n' +
@@ -201,15 +201,21 @@ function Tests(ASSERT, PKCS7, PKI, AES, DES, UTIL) {
     });
 
     it('should sign data', function() {
-      var p7 = PKCS7.createSignedData();
 
-      var cert = PKI.certificateFromPem(_pem.certificate);
-      p7.addCertificate(cert);
+        var cert = PKI.certificateFromPem(_pem.certificate, true);
+        var privateKey = PKI.privateKeyFromPem(_pem.privateKey);
 
-      // set content
-      p7.content = UTIL.createBuffer('data to sign');
+        var p7 = PKCS7.createSignedData();
+        p7.addCertificate(cert);
 
-      p7.sign();
+        // set content
+        p7.content = UTIL.createBuffer('data to sign');
+
+        p7.sign({key: privateKey, md: cert.md});
+
+        var asn1 = p7.toAsn1();
+        var der = ASN1.toDer(asn1);
+        var hex = der.toHex();
 
     })
 
@@ -328,15 +334,7 @@ function Tests(ASSERT, PKCS7, PKI, AES, DES, UTIL) {
       });
     });
 
-    it('should sign data', function() {
-        var p7 = PKCS7.createSignedData();
-        p7.addRecipient(PKI.certificateFromPem(_pem.certificate));
-        p7.content = UTIL.createBuffer('Just a little test');
 
-        p7.sign()
-
-
-    })
   });
 }
 
@@ -347,8 +345,9 @@ if(typeof define === 'function') {
     'forge/pki',
     'forge/aes',
     'forge/des',
-    'forge/util'
-  ], function(PKCS7, PKI, AES, DES, UTIL) {
+    'forge/util',
+    'forge/asn1'
+  ], function(PKCS7, PKI, AES, DES, UTIL, ASN1) {
     Tests(
       // Global provided by test harness
       ASSERT,
@@ -356,7 +355,8 @@ if(typeof define === 'function') {
       PKI(),
       AES(),
       DES(),
-      UTIL()
+      UTIL(),
+      ASN1()
     );
   });
 } else if(typeof module === 'object' && module.exports) {
