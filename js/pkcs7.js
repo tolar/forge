@@ -539,10 +539,14 @@ p7.createSignedData = function() {
 
         var signerInfo = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
             asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.signedData).getBytes()),
-            asn1.create(asn1.Class.CONTEXT_SPECIFIC, 0, true, [
+            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
                 asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false,  asn1.integerToDer(1).getBytes()), // TODO vzdy 1?
                 asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SET, true, [
-                    digestAlg
+                    // digestAlg
+                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
+                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+                    ])
                 ]),
                 asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
                     asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.data).getBytes()),
@@ -559,8 +563,16 @@ p7.createSignedData = function() {
                         msg.certificates[0].issuer.getField('CN'),
                         asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false, forge.util.hexToBytes(certificate.serialNumber))
                     ]),
-                    digestAlg,
-                    rsaEncryption,
+                    //digestAlg,
+                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
+                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+                    ]),
+                    //rsaEncryption,
+                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.rsaEncryption).getBytes()),
+                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+                    ]),
                     asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OCTETSTRING, false, signature)
 
                 ])
