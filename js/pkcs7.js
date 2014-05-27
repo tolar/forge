@@ -465,11 +465,10 @@ p7.createSignedData = function() {
      */
     sign: function(signer) {
 
-      var privateKey = signer.key;
-      var md = signer.md;
+        var privateKey = signer.key;
+        var md = signer.md;
 
-      if('content' in msg) {
-
+        //if('content' in msg) {
         md.update(msg.content);
 
 //          var asn1_result = ASN1.encode(
@@ -526,71 +525,110 @@ p7.createSignedData = function() {
 //                  ])
 //              );
 
-        var digestAlg = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//        var digestAlg = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
+//            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+//        ])
+//        var rsaEncryption = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//          asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.rsaEncryption).getBytes()),
+//          asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+//        ])
+//        var certificate = msg.certificates[0];
+//        var signature = privateKey.sign(md);
+
+
+
+//        var signerInfo = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.signedData).getBytes()),
+//            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false,  asn1.integerToDer(1).getBytes()), // TODO vzdy 1?
+//                //asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SET, true, [   digestAlg
+//                asn1.create(asn1.Class.CONTEXT_SPECIFIC, 0, true [ digestAlg
+//                    // digestAlg
+////                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+////                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
+////                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+////                    ])
+//                ]),
+//                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.data).getBytes()),
+//                    asn1.create(asn1.Class.CONTEXT_SPECIFIC, 0, true, [
+//                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OCTETSTRING, false, msg.content)
+//                    ])
+//                ]),
+//                asn1.create(asn1.Class.CONTEXT_SPECIFIC, 0, true, [
+//                    certificate
+//                ]),
+//                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SET, true, [
+//                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false,  asn1.integerToDer(1).getBytes()), // TODO vzdy 1?
+//                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//                        msg.certificates[0].issuer.getField('CN'),
+//                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false, forge.util.hexToBytes(certificate.serialNumber))
+//                    ]),
+//                    //digestAlg,
+//                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
+//                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+//                    ]),
+//                    //rsaEncryption,
+//                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.rsaEncryption).getBytes()),
+//                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+//                    ]),
+//                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OCTETSTRING, false, signature)
+//
+//                ])
+//            ])
+//        ])
+
+
+//        var signerInfo = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+//            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.signedData).getBytes()),
+//            sequence
+//        ]);
+
+//        console.log(asn1.prettyPrint(signerInfo, 6, 4));
+//
+//        msg.signerInfos.push(signerInfo);
+
+        // TODO: generate digest algorithm identifiers
+        msg.digestAlgorithmIdentifiers.push(asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
             asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
             asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
-        ])
-        var rsaEncryption = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-          asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.rsaEncryption).getBytes()),
-          asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
-        ])
+        ]));
+
+
+        // TODO: generate signerInfos
         var certificate = msg.certificates[0];
         var signature = privateKey.sign(md);
-
-        var signerInfo = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.signedData).getBytes()),
+        msg.signerInfos.push(asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false,  asn1.integerToDer(1).getBytes()), // TODO vzdy 1?
             asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false,  asn1.integerToDer(1).getBytes()), // TODO vzdy 1?
-                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SET, true, [
-                    // digestAlg
-                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
-                    ])
-                ]),
-                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.data).getBytes()),
-                    asn1.create(asn1.Class.CONTEXT_SPECIFIC, 0, true, [
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OCTETSTRING, false, msg.content)
-                    ])
-                ]),
-                asn1.create(asn1.Class.CONTEXT_SPECIFIC, 0, true, [
-                    certificate
-                ]),
-                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SET, true, [
-                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false,  asn1.integerToDer(1).getBytes()), // TODO vzdy 1?
-                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-                        msg.certificates[0].issuer.getField('CN'),
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false, forge.util.hexToBytes(certificate.serialNumber))
-                    ]),
-                    //digestAlg,
-                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
-                    ]),
-                    //rsaEncryption,
-                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.rsaEncryption).getBytes()),
-                        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
-                    ]),
-                    asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OCTETSTRING, false, signature)
+                forge.pki.distinguishedNameToAsn1(msg.certificates[0].issuer),
+                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.INTEGER, false, forge.util.hexToBytes(certificate.serialNumber))
+            ]),
+            //digestAlg,
+            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.sha1).getBytes()), // TODO podpora i dalsich digest algoritmu?
+                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+            ]),
+            //rsaEncryption,
+            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
+                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, asn1.oidToDer(forge.pki.oids.rsaEncryption).getBytes()),
+                asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+            ]),
+            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OCTETSTRING, false, signature)
 
-                ])
-            ])
-        ])
+        ]));
+      //}
 
-        msg.signerInfos.push(signerInfo);
-
-      }
-
-      //if(typeof msg.content !== 'object') {
-        // use Data ContentInfo
         msg.contentInfo = asn1.create(
           asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
             // ContentType
             asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false,
               asn1.oidToDer(forge.pki.oids.data).getBytes())
-          ]);
+          ]
+        );
 
         // add actual content, if present
         if('content' in msg) {
@@ -601,11 +639,11 @@ p7.createSignedData = function() {
                 msg.content)
             ]));
         }
-      //}
 
-      // TODO: generate digest algorithm identifiers
 
-      // TODO: generate signerInfos
+
+
+
     },
 
     verify: function() {
